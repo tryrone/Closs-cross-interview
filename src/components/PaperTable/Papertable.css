@@ -1,0 +1,44 @@
+.container {
+  border-radius: 4px;
+  /* box-shadow: 2px 7px 15px #adacac; */
+  border: 1px solid #dee2e6;
+  position: relative;
+  top: -90px;
+  background: white;
+}
+
+.paper {
+  background: white;
+  width: 80%;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+td {
+  padding: 0.9rem 1.2rem;
+  font-size: 1.2rem;
+}
+th {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: rgba(17, 51, 83, 0.6);
+}
+
+td.name {
+  cursor: pointer;
+}
+
+.load {
+  position: relative;
+  left: 350px;
+  right: -650px;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: inline;
+}
