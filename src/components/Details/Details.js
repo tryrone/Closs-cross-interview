@@ -1,42 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getCryptData } from "../../Actions/coinAction";
+import Moment from "react-moment";
 
 class Details extends Component {
-  constructor() {
-    super();
-    this.state = {
-      details: []
-    };
-  }
   componentDidMount() {
-    const requestOptions = {
-      qs: {
-        start: "1",
-        limit: "1",
-        convert: "USD,BTC",
-        sort: "percent_change_1h"
-      },
-      headers: {
-        "X-CMC_PRO_API_KEY": "6fde424d-05f4-4573-9a18-e7df799ae0e2"
-      },
-      json: true,
-      gzip: true
-    };
-
-    axios
-      .get(
-        "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-        requestOptions
-      )
-      .then(response => {
-        const names = response.data.data;
-
-        this.setState({ details: names });
-      })
-      .catch(err => {
-        console.log("API call error:", err.message);
-      });
+    this.props.getCryptData();
   }
 
   handleClickInfo() {
@@ -50,36 +21,62 @@ class Details extends Component {
 
     let layout;
 
-    let dummmies = this.state.details.filter(detail => detail.id === id);
-
-    console.log(dummmies);
+    let dummmies = this.props.coin.filter(detail => detail.id === id);
 
     dummmies.map(dummy => {
+      let naira = dummy.total_supply * 361.0;
+
+      let roundConv1 = +(Math.round(naira + "e+2") + "e-2");
+
+      var parts = roundConv1.toString().split(".");
+
+      let finalNaira =
+        parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        (parts[1] ? "." + parts[1] : "");
+
+      let roundConv = +Math.round(dummy.circulating_supply);
       layout = (
         <div>
-          <h1 className="display-4 my-3">
+          <h1 className="display-5 my-3">
             <span className="text-dark">Currency Name: {dummy.name} </span>
           </h1>
           <h3 className="mb-3">Currency Details</h3>
           <ul className="list-group">
             <li className="list-group-item">
-              Circulating Supply : {dummy.circulating_supply}
+              <span style={{ fontWeight: "bold" }}>Circulating Supply </span> :
+              &nbsp;
+              {roundConv}
             </li>
-            <li className="list-group-item">Data Added : {dummy.date_added}</li>
             <li className="list-group-item">
-              Volume in the Last 24(h) : {dummy.quote.USD.volume_24h}{" "}
+              {" "}
+              <span style={{ fontWeight: "bold" }}>Date Added</span> :{" "}
+              <Moment format="YYYY/MM/DD">{dummy.date_added}</Moment>
+            </li>
+            <li className="list-group-item">
+              <span style={{ fontWeight: "bold" }}>
+                Volume in the Last 24(h){" "}
+              </span>{" "}
+              : {dummy.quote.USD.volume_24h}{" "}
+              <span style={{ fontWeight: "bold" }}>BTC</span>
             </li>
           </ul>
 
           <h4 className="my-3">Market Details</h4>
           <ul className="list-group">
             <li className="list-group-item">
-              Market Cap: {dummy.quote.USD.market_cap}{" "}
+              <span style={{ fontWeight: "bold" }}> Market Cap </span>:{" "}
+              {dummy.quote.USD.market_cap}{" "}
             </li>
             <li className="list-group-item">
-              Total Supply: {dummy.total_supply}
+              <span style={{ fontWeight: "bold" }}> Total Supply</span>:{" "}
+              <b>N</b>&nbsp;
+              {finalNaira}
             </li>
-            <li className="list-group-item">CMC RANK: {dummy.cmc_rank} </li>
+            <li className="list-group-item">
+              {" "}
+              <span style={{ fontWeight: "bold" }}>CMC RANK </span>:{" "}
+              {dummy.cmc_rank}{" "}
+            </li>
           </ul>
           <hr />
           <Link
@@ -100,4 +97,15 @@ class Details extends Component {
   }
 }
 
-export default Details;
+Details.propTypes = {
+  getCryptData: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  coin: state.coin.names
+});
+
+export default connect(
+  mapStateToProps,
+  { getCryptData }
+)(Details);

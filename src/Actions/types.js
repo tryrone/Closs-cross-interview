@@ -1,0 +1,2 @@
+export const GET_CURRENT_COIN_DATA = "GET_CURRENT_COIN_DATA";
+export const GET_ERRORS = "GET_ERRORS";

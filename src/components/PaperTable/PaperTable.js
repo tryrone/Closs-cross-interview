@@ -1,49 +1,25 @@
 import React, { Component } from "react";
-import axios from "axios";
+//import axios from "axios";
 import "./Papertable.css";
 import classnames from "classnames";
 import PaperContent from "./PaperContent";
 import Details from "../Details/Details";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getCryptData } from "../../Actions/coinAction";
 import loader from "../../Dual Ring-0.8s-168px.gif";
 
 class PaperTable extends Component {
   constructor() {
     super();
     this.state = {
-      curNames: [],
       detailsId: "",
       details: []
     };
   }
 
   componentDidMount() {
-    const requestOptions = {
-      qs: {
-        start: "1",
-        limit: "1",
-        convert: "USD,BTC",
-        sort: "percent_change_1h"
-      },
-      headers: {
-        "X-CMC_PRO_API_KEY": "6fde424d-05f4-4573-9a18-e7df799ae0e2"
-      },
-      json: true,
-      gzip: true
-    };
-
-    axios
-      .get(
-        "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-        requestOptions
-      )
-      .then(response => {
-        const names = response.data.data;
-
-        this.setState({ curNames: names });
-      })
-      .catch(err => {
-        console.log("API call error:", err.message);
-      });
+    this.props.getCryptData();
   }
 
   handleDetails(idValue, totDetails) {
@@ -57,15 +33,13 @@ class PaperTable extends Component {
   }
   render() {
     let loading;
-    if (
-      this.state.curNames === null ||
-      Object.keys(this.state.curNames).length === 0
-    ) {
+
+    if (this.props.coin === null || Object.keys(this.props.coin).length === 0) {
       loading = (
         <img src={loader} alt="loading..." style={{ alignSelf: "center" }} />
       );
     }
-    console.log(this.state.curNames);
+
     return (
       <div>
         <div className="container">
@@ -93,7 +67,7 @@ class PaperTable extends Component {
                 </thead>
                 <tbody>
                   <span className="load">{loading}</span>
-                  {this.state.curNames.map(curName => (
+                  {this.props.coin.map(curName => (
                     <PaperContent
                       totData={curName}
                       id={curName.id}
@@ -125,4 +99,17 @@ class PaperTable extends Component {
   }
 }
 
-export default PaperTable;
+PaperTable.propTypes = {
+  getCryptData: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  coin: state.coin.names
+});
+
+export default connect(
+  mapStateToProps,
+  { getCryptData }
+)(PaperTable);
+
+// export default PaperTable;
