@@ -30,9 +30,9 @@ td.name {
 }
 
 .load {
-  position: relative;
-  left: 350px;
-  right: -650px;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
 }
 
 .hide {
@@ -41,4 +41,12 @@ td.name {
 
 .show {
   display: inline;
+}
+
+@media screen and (max-width:768px){
+  .container {
+  
+  top: -60px;
+ 
+}
 }

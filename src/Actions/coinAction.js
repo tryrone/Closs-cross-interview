@@ -1,6 +1,10 @@
 import axios from "axios";
 
-import { GET_CURRENT_COIN_DATA, GET_ERRORS } from "./types";
+import {
+  GET_CURRENT_COIN_DATA,
+  GET_ERRORS,
+  FETCH_TODOS_REQUEST
+} from "./types";
 
 // GET Cryptocurrency Data
 
@@ -18,22 +22,31 @@ const requestOptions = {
   gzip: true
 };
 
-export const getCryptData = () => dispatch => {
-  axios
-    .get(
-      "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-      requestOptions
-    )
-    .then(response => {
-      dispatch({
-        type: GET_CURRENT_COIN_DATA,
-        payload: response.data.data
-      });
-    })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
+export function fetchTodosRequest() {
+  return {
+    type: FETCH_TODOS_REQUEST
+  };
+}
+
+export function getCryptData() {
+  return dispatch => {
+    dispatch(fetchTodosRequest());
+    return axios
+      .get(
+        "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+        requestOptions
+      )
+      .then(response => {
+        dispatch({
+          type: GET_CURRENT_COIN_DATA,
+          payload: response.data.data
+        });
       })
-    );
-};
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
+  };
+}
