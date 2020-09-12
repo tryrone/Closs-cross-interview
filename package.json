@@ -8,7 +8,7 @@
     "expect": "^24.9.0",
     "fetch-mock": "^7.5.1",
     "moment": "^2.24.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-moment": "^0.9.6",
